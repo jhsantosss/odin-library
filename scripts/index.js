@@ -34,15 +34,31 @@ class Library {
   remove(wantedBook) {
     this.books = this.books.filter(item => item !== wantedBook);
   }
+
+  buildTable() {
+    let table = document.querySelector('#booksTable');
+
+    this.books.forEach(item => {
+      let row = `<tr>
+                  <td>${item.title}</td>
+                  <td>${item.author}</td>
+                  <td>${item.pages}</td>
+                  <td>${item.isRead}</td>
+                 <tr>`;
+
+      table.innerHTML += row;
+    })
+  }
 }
 
+let myLibrary = new Library();
 
+myLibrary.add('teste');
 
-// let myLibrary = new Library();
+myLibrary.add('teste2');
 
-// myLibrary.add('teste');
+myLibrary.buildTable();
 
-// myLibrary.add('teste2');
 
 // myLibrary.add('teste');
 
