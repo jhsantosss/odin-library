@@ -22,12 +22,12 @@ class Library {
   }
 
   #hasBook(wantedBook) {
-    return !!this.books.some(item => item === wantedBook);
+    return !!this.books.some(item => item.title === wantedBook);
   }
 
-  add(book) {
-    if (!this.#hasBook(book)) {
-      this.books.push(book);
+  add(title, author, pages, isRead) {
+    if (!this.#hasBook(title)) {
+      this.books.push(new Book(title, author, pages, isRead));
     }
   }
 
