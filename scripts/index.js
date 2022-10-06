@@ -4,7 +4,7 @@ class Book {
     this.title = title || 'Unknown';
     this.author = author || 'Unknown';
     this.pages = pages || 'Unknown';
-    this.isRead = isRead || false;
+    this.isRead = isRead || 'No';
 
   }
 
@@ -37,7 +37,7 @@ class Library {
 
   buildTable() {
     let table = document.querySelector('#booksTable');
-
+    table.innerHTML = '';
     this.books.forEach(item => {
       let row = `<tr>
                   <td>${item.title}</td>
@@ -51,24 +51,17 @@ class Library {
   }
 }
 
-let myLibrary = new Library();
-
-myLibrary.add('teste');
-
-myLibrary.add('teste2');
-
-myLibrary.buildTable();
-
+let myBooks = new Library();
 
 const modal = document.querySelector("#modal");
-const btn = document.querySelector("#newBook");
-const span = document.querySelector("#close");
+const newBook = document.querySelector("#newBook");
+const closeModal = document.querySelector("#close");
 
-btn.onclick = function() {
+newBook.onclick = function() {
   modal.style.display = "block";
 }
 
-span.onclick = function() {
+closeModal.onclick = function() {
   modal.style.display = "none";
 }
 
@@ -78,31 +71,23 @@ window.onclick = function(event) {
   }
 } 
 
+const addBook = document.querySelector('#addBook');
 
-// myLibrary.add('teste');
+addBook.onclick = function() {
 
-// console.log(myLibrary);
+  let form = document.querySelector('#bookInfo');
+  let inputTitle = document.querySelector('#title');
+  let inputAuthor = document.querySelector('#author');
+  let inputPages = document.querySelector('#pages');
+  let inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
 
-// myLibrary.remove('teste');
+  myBooks.add(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead);
+  myBooks.buildTable();
+  
+  form.reset()
+  // alert(inputIsRead.value)
 
-// console.log(myLibrary);
-
-// console.log(myLibrary.#hasBook('teste3'));
-
+  return modal.style.display = "none";
+}
 
 
-
-
-
-// const book1 = new Book('nome', '', '300', true);
-
-// const book2 = new Book('nome2', 'autor2', '300', false);
-
-// book1.info();
-
-// let json = JSON.stringify(book1, null, 2);
-
-// console.log(book1);
-
-// console.log(book1.info());
-// console.log(book2.info());
