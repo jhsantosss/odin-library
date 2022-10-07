@@ -25,14 +25,19 @@ class Library {
     return !!this.books.some(item => item.title === wantedBook);
   }
 
-  #add(title, author, pages, isRead) {
+  #addBook(title, author, pages, isRead) {
     if (!this.#hasBook(title)) {
       this.books.push(new Book(title, author, pages, isRead));
     }
   }
 
+  #removeBook(wantedBook) {
+    this.books = this.books.filter(item => item.title != wantedBook);
+    this.buildTable();
+  }
+
   #checkEmptTitle() {
-    let inputTitle = document.querySelector('#title');
+    const inputTitle = document.querySelector('#title');
 
     if(inputTitle.value.trim().length === 0) {
       alert('Sorry, title must be provided.');
@@ -42,28 +47,33 @@ class Library {
     return true;
   }
 
-  remove(wantedBook) {
-    this.books = this.books.filter(item => item !== wantedBook);
+  #updateActions() {
+    const deleteButton = document.querySelectorAll('.removeBook');
+    for (let i = 0; i < deleteButton.length; i++) {
+      deleteButton[i].addEventListener('click', () => {
+        this.#removeBook(deleteButton[i].id);
+      });
+    }
   }
 
   getBook() {
-    let inputTitle = document.querySelector('#title');
-    let inputAuthor = document.querySelector('#author');
-    let inputPages = document.querySelector('#pages');
-    let inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
+    const inputTitle = document.querySelector('#title');
+    const inputAuthor = document.querySelector('#author');
+    const inputPages = document.querySelector('#pages');
+    const inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
     if (this.#checkEmptTitle()) {
-      this.#add(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead);
+      this.#addBook(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead);
       return true;
     }
   }
 
   resetInput() {
-    let forms = document.querySelector('#bookInfo');
+    const forms = document.querySelector('#bookInfo');
     return forms.reset();
   }
 
   buildTable() {
-    let table = document.querySelector('#booksTable');
+    const table = document.querySelector('#booksTable');
     table.innerHTML = '';
     this.books.forEach(item => {
       let row = `<tr>
@@ -71,14 +81,17 @@ class Library {
                    <td>${item.author}</td>
                    <td>${item.pages}</td>
                    <td>${item.isRead}</td>
+                   <td><button id="${item.title}" class="removeBook">Delete</button></td>
                  <tr>`;
       table.innerHTML += row;
     })
+    this.#updateActions();
   }
 }
 
-let myBooks = new Library();
+const myBooks = new Library();
 
+const addBook = document.querySelector('#addBook');
 const modal = document.querySelector("#modal");
 const newBook = document.querySelector("#newBook");
 const closeModal = document.querySelector("#close");
@@ -90,11 +103,9 @@ newBook.onclick = showModal;
 
 closeModal.onclick = hideModal;
 
-window.onclick = (event) => { if (event.target == modal) hideModal() };
+window.onclick = event => { if (event.target == modal) hideModal() };
 
-const addBook = document.querySelector('#addBook');
-
-addBook.onclick = (event) => {
+addBook.onclick = event => {
   event.preventDefault();
   if (myBooks.getBook()) {
     myBooks.buildTable();
