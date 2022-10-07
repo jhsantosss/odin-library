@@ -1,10 +1,10 @@
 class Book {
   constructor (title, author, pages, isRead) {
 
-    this.title = title || 'Unknown';
+    this.title = title;
     this.author = author || 'Unknown';
     this.pages = pages || 'Unknown';
-    this.isRead = isRead || 'No';
+    this.isRead = isRead;
 
   }
 
@@ -31,6 +31,17 @@ class Library {
     }
   }
 
+  #checkEmptTitle() {
+    let inputTitle = document.querySelector('#title');
+
+    if(inputTitle.value.trim().length === 0) {
+      alert('Sorry, title must be provided.');
+      return false;
+    }
+
+    return true;
+  }
+
   remove(wantedBook) {
     this.books = this.books.filter(item => item !== wantedBook);
   }
@@ -40,7 +51,10 @@ class Library {
     let inputAuthor = document.querySelector('#author');
     let inputPages = document.querySelector('#pages');
     let inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
-    return this.#add(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead);
+    if (this.#checkEmptTitle()) {
+      this.#add(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead);
+      return true;
+    }
   }
 
   resetInput() {
@@ -53,10 +67,10 @@ class Library {
     table.innerHTML = '';
     this.books.forEach(item => {
       let row = `<tr>
-                  <td>${item.title}</td>
-                  <td>${item.author}</td>
-                  <td>${item.pages}</td>
-                  <td>${item.isRead}</td>
+                   <td>${item.title}</td>
+                   <td>${item.author}</td>
+                   <td>${item.pages}</td>
+                   <td>${item.isRead}</td>
                  <tr>`;
       table.innerHTML += row;
     })
@@ -80,9 +94,11 @@ window.onclick = (event) => { if (event.target == modal) hideModal() };
 
 const addBook = document.querySelector('#addBook');
 
-addBook.onclick = () => {
-  myBooks.getBook();
-  myBooks.buildTable();
-  myBooks.resetInput();
-  return hideModal();
+addBook.onclick = (event) => {
+  event.preventDefault();
+  if (myBooks.getBook()) {
+    myBooks.buildTable();
+    myBooks.resetInput();
+    hideModal();
+  }
 }
