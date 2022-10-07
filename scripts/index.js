@@ -25,7 +25,7 @@ class Library {
     return !!this.books.some(item => item.title === wantedBook);
   }
 
-  add(title, author, pages, isRead) {
+  #add(title, author, pages, isRead) {
     if (!this.#hasBook(title)) {
       this.books.push(new Book(title, author, pages, isRead));
     }
@@ -33,6 +33,19 @@ class Library {
 
   remove(wantedBook) {
     this.books = this.books.filter(item => item !== wantedBook);
+  }
+
+  getBook() {
+    let inputTitle = document.querySelector('#title');
+    let inputAuthor = document.querySelector('#author');
+    let inputPages = document.querySelector('#pages');
+    let inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
+    return this.#add(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead);
+  }
+
+  resetInput() {
+    let forms = document.querySelector('#bookInfo');
+    return forms.reset();
   }
 
   buildTable() {
@@ -45,7 +58,6 @@ class Library {
                   <td>${item.pages}</td>
                   <td>${item.isRead}</td>
                  <tr>`;
-
       table.innerHTML += row;
     })
   }
@@ -57,37 +69,20 @@ const modal = document.querySelector("#modal");
 const newBook = document.querySelector("#newBook");
 const closeModal = document.querySelector("#close");
 
-newBook.onclick = function() {
-  modal.style.display = "block";
-}
+const showModal = () => modal.style.display = "block";
+const hideModal = () => modal.style.display = "none";
 
-closeModal.onclick = function() {
-  modal.style.display = "none";
-}
+newBook.onclick = showModal;
 
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-} 
+closeModal.onclick = hideModal;
+
+window.onclick = (event) => { if (event.target == modal) hideModal() };
 
 const addBook = document.querySelector('#addBook');
 
-addBook.onclick = function() {
-
-  let form = document.querySelector('#bookInfo');
-  let inputTitle = document.querySelector('#title');
-  let inputAuthor = document.querySelector('#author');
-  let inputPages = document.querySelector('#pages');
-  let inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
-
-  myBooks.add(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead);
+addBook.onclick = () => {
+  myBooks.getBook();
   myBooks.buildTable();
-  
-  form.reset()
-  // alert(inputIsRead.value)
-
-  return modal.style.display = "none";
+  myBooks.resetInput();
+  return hideModal();
 }
-
-
