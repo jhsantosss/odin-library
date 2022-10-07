@@ -51,7 +51,7 @@ class Library {
     const deleteButton = document.querySelectorAll('.removeBook');
     for (let i = 0; i < deleteButton.length; i++) {
       deleteButton[i].addEventListener('click', () => {
-        this.#removeBook(deleteButton[i].id);
+        this.#removeBook(deleteButton[i].id.replace('-delete', ''));
       });
     }
   }
@@ -76,12 +76,13 @@ class Library {
     const table = document.querySelector('#booksTable');
     table.innerHTML = '';
     this.books.forEach(item => {
+      let idDelete = `${item.title}-delete`;
       let row = `<tr>
                    <td>${item.title}</td>
                    <td>${item.author}</td>
                    <td>${item.pages}</td>
                    <td>${item.isRead}</td>
-                   <td><button id="${item.title}" class="removeBook">Delete</button></td>
+                   <td><button id="${idDelete}" class="removeBook">Delete</button></td>
                  <tr>`;
       table.innerHTML += row;
     })
