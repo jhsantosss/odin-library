@@ -160,6 +160,7 @@ addBook.onclick = event => {
       myBooks.buildTable();
       myBooks.resetInput();
       hideModal();
+      resetModal();
     }
   } else {
       if (myBooks.getBook()) {
@@ -168,4 +169,8 @@ addBook.onclick = event => {
         hideModal();
     }
   }
+}
+
+function resetModal() {
+  addBook.value = 'Add';
 }
