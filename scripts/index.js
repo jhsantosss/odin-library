@@ -82,13 +82,19 @@ class Library {
     }
   }
 
-  getBook() {
+  getData() {
     const inputTitle = document.querySelector('#title');
     const inputAuthor = document.querySelector('#author');
     const inputPages = document.querySelector('#pages');
     const inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
+    const data = [inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead.value];
+    return data;
+  }
+
+  getBook() {
+    const data = this.getData();
     if (this.#checkEmptTitle()) {
-      this.#addBook(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead);
+      this.#addBook(data[0], data[1], data[2], data[3]);
       return true;
     }
   }
@@ -142,7 +148,10 @@ const newBook = document.querySelector("#newBook");
 const closeModal = document.querySelector("#close");
 
 const showModal = () => modal.style.display = "block";
-const hideModal = () => modal.style.display = "none";
+const hideModal = () => {
+  modal.style.display = "none";
+  resetModal();
+}
 
 let aux = '';
 
@@ -160,7 +169,6 @@ addBook.onclick = event => {
       myBooks.buildTable();
       myBooks.resetInput();
       hideModal();
-      resetModal();
     }
   } else {
       if (myBooks.getBook()) {
