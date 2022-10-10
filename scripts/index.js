@@ -82,19 +82,24 @@ class Library {
     }
   }
 
-  getData() {
+  #getData() {
     const inputTitle = document.querySelector('#title');
     const inputAuthor = document.querySelector('#author');
     const inputPages = document.querySelector('#pages');
     const inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
-    const data = [inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead.value];
+    const data = {
+      title : inputTitle.value,
+      author : inputAuthor.value,
+      pages : inputPages.value,
+      isRead : inputIsRead
+    };
     return data;
   }
 
   getBook() {
-    const data = this.getData();
+    const data = this.#getData();
     if (this.#checkEmptTitle()) {
-      this.#addBook(data[0], data[1], data[2], data[3]);
+      this.#addBook(data.title, data.author, data.pages, data.isRead);
       return true;
     }
   }
