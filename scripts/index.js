@@ -37,8 +37,8 @@ class Library {
   }
 
   #editBook(wantedBook) {
-    const filter = this.books.filter(item => item.title === wantedBook);
-    const index = this.books.indexOf(filter[0]);
+    const bookToBeEdited = this.books.filter(item => item.title === wantedBook)[0];
+    const index = this.books.indexOf(bookToBeEdited);
     aux = index;
     showModal();
     addBook.value = 'Update';
@@ -48,10 +48,10 @@ class Library {
     const inputPages = document.querySelector('#pages');
     const inputIsRead = document.querySelector('#check');
 
-    inputTitle.value = filter[0].title;
-    inputAuthor.value = filter[0].author;
-    inputPages.value = filter[0].pages;
-    inputIsRead.checked = (filter[0].isRead === 'Yes') ? true : false;
+    inputTitle.value = bookToBeEdited.title;
+    inputAuthor.value = bookToBeEdited.author;
+    inputPages.value = bookToBeEdited.pages;
+    inputIsRead.checked = (bookToBeEdited.isRead === 'Yes') ? true : false;
 
   }
 
@@ -91,7 +91,7 @@ class Library {
       title : inputTitle.value,
       author : inputAuthor.value,
       pages : inputPages.value,
-      isRead : inputIsRead
+      isRead : inputIsRead,
     };
     return data;
   }
@@ -105,15 +105,12 @@ class Library {
   }
 
   updateBook() {
-    const inputTitle = document.querySelector('#title');
-    const inputAuthor = document.querySelector('#author');
-    const inputPages = document.querySelector('#pages');
-    const inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
+    const data = this.#getData();
     if (this.#checkEmptTitle()) {
-      this.books[aux].title = inputTitle.value;
-      this.books[aux].author = inputAuthor.value;
-      this.books[aux].pages = inputPages.value;
-      this.books[aux].isRead = inputIsRead;
+      this.books[aux].title = data.title;
+      this.books[aux].author = data.author;
+      this.books[aux].pages = data.pages;
+      this.books[aux].isRead = data.isRead;
       return true;
     }
   }
