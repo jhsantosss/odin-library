@@ -36,23 +36,30 @@ class Library {
     this.buildTable();
   }
 
-  #editBook(wantedBook) {
-    const bookToBeEdited = this.books.filter(item => item.title === wantedBook)[0];
-    const index = this.books.indexOf(bookToBeEdited);
-    aux = index;
+  #selectBook(wantedTitle) {
+    const wantedBook = this.books.filter(item => item.title === wantedTitle).at(0);
+    const index = this.books.indexOf(wantedBook);
+    const selectedBook = {
+      book : wantedBook,
+      index : index,
+    }
+    return selectedBook;
+  }
+
+  #editBook(selected) {
+    const bookToBeEdited = selected.book;
+    aux = selected.index;
     showModal();
     addBook.value = 'Update';
 
-    const inputTitle = document.querySelector('#title');
-    const inputAuthor = document.querySelector('#author');
-    const inputPages = document.querySelector('#pages');
-    const inputIsRead = document.querySelector('#check');
+    const input = this.#getInput();
 
-    inputTitle.value = bookToBeEdited.title;
-    inputAuthor.value = bookToBeEdited.author;
-    inputPages.value = bookToBeEdited.pages;
-    inputIsRead.checked = (bookToBeEdited.isRead === 'Yes') ? true : false;
+    input.title.value = bookToBeEdited.title;
+    input.author.value = bookToBeEdited.author;
+    input.pages.value = bookToBeEdited.pages;
+    input.isRead.checked = (bookToBeEdited.isRead === 'Yes') ? true : false;
 
+    
   }
 
   #checkEmptTitle() {
@@ -77,21 +84,32 @@ class Library {
     const editButton = document.querySelectorAll('.editBook');
     for (let i = 0; i < deleteButton.length; i++) {
       editButton[i].addEventListener('click', () => {
-        this.#editBook(editButton[i].id.replace('-edit', ''));
+        this.#editBook(this.#selectBook(editButton[i].id.replace('-edit', '')));
       });
     }
   }
 
-  #getData() {
+  #getInput() {
     const inputTitle = document.querySelector('#title');
     const inputAuthor = document.querySelector('#author');
     const inputPages = document.querySelector('#pages');
-    const inputIsRead = document.querySelector('#check:checked') ? 'Yes' : 'No';
-    const data = {
-      title : inputTitle.value,
-      author : inputAuthor.value,
-      pages : inputPages.value,
+    const inputIsRead = document.querySelector('#check');
+    const input = {
+      title : inputTitle,
+      author : inputAuthor,
+      pages : inputPages,
       isRead : inputIsRead,
+    };
+    return input;
+  }
+
+  #getData() {
+    const input = this.#getInput();
+    const data = {
+      title : input.title.value,
+      author : input.author.value,
+      pages : input.pages.value,
+      isRead : input.isRead.checked ? 'Yes' : 'No',
     };
     return data;
   }
@@ -153,6 +171,7 @@ const showModal = () => modal.style.display = "block";
 const hideModal = () => {
   modal.style.display = "none";
   resetModal();
+  myBooks.resetInput();
 }
 
 let aux = '';
