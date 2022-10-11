@@ -146,18 +146,18 @@ class Library {
 
   #updateActions() {
     const deleteButton = document.querySelectorAll('.removeBook');
-    for (let i = 0; i < deleteButton.length; i++) {
-      deleteButton[i].addEventListener('click', () => {
-        this.#removeBook(deleteButton[i].id.replace('-delete', ''));
+    deleteButton.forEach(item => {
+      item.addEventListener('click', () => {
+        this.#removeBook(item.id.replace('-delete', ''));
       });
-    }
+    });
 
     const editButton = document.querySelectorAll('.editBook');
-    for (let i = 0; i < deleteButton.length; i++) {
-      editButton[i].addEventListener('click', () => {
-        this.#editBookInfo(this.#selectBook(editButton[i].id.replace('-edit', '')));
+    editButton.forEach(item => {
+      item.addEventListener('click', () => {
+        this.#editBookInfo(this.#selectBook(item.id.replace('-edit', '')));
       });
-    }
+    });
   }
 }
 
