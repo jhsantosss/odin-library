@@ -19,7 +19,7 @@ class Book {
 class Library {
   constructor () {
     this.books = [];
-    this.selectedIndex;
+    this.selectedIndex = 0;
   }
 
   getBook() {
@@ -49,6 +49,48 @@ class Library {
     this.books.forEach(item => {
       let idDelete = `${item.title}-delete`;
       let idEdit = `${item.title}-edit`;
+
+
+
+
+      // let row = document.createElement('tr');
+      // let title = document.createElement('td');
+      // let author = document.createElement('td');
+      // let pages = document.createElement('td');
+      // let isRead = document.createElement('td');
+      // let actions = document.createElement('td');
+
+      // let editButton = document.createElement('button');
+      // let deleteButton = document.createElement('button');
+
+      // editButton.className = 'editBook';
+      // editButton.id = `${idEdit}`;
+
+      // deleteButton.className = 'editBook';
+      // deleteButton.id = `${idDelete}`;
+
+      // title.innerText = `${item.title}`;
+      // author.innerText = `${item.author}`;
+      // pages.innerText = `${item.pages}`;
+      // isRead.innerText = `${item.isRead}`;
+      // editButton.innerText = 'Edit';
+      // deleteButton.innerText = 'Delete';
+
+      // actions.appendChild(editButton);
+      // actions.appendChild(deleteButton);
+
+
+      // row.appendChild(title, author, pages);
+      // row.appendChild(author);
+      // row.appendChild(pages);
+      // row.appendChild(isRead);
+      // row.appendChild(actions);
+
+      // table.appendChild(row);
+
+
+
+
       let row = `<tr>
                    <td>${item.title}</td>
                    <td>${item.author}</td>
@@ -125,7 +167,7 @@ class Library {
   }
 
   #hasBook(wantedBook) {
-    if (!!this.books.some(item => item.title === wantedBook)) {
+    if ((this.books[this.selectedIndex]?.title != wantedBook) && (!!this.books.some(item => item.title === wantedBook))) {
       alert ('Sorry, this title has already been registered.')
       return true;
     }
