@@ -167,7 +167,8 @@ class Library {
   }
 
   #hasBook(wantedBook) {
-    if ((this.books[this.selectedIndex]?.title != wantedBook) && (!!this.books.some(item => item.title === wantedBook))) {
+    if ((this.books[this.selectedIndex]?.title != wantedBook)
+      && (!!this.books.some(item => item.title === wantedBook))) {
       alert ('Sorry, this title has already been registered.')
       return true;
     }
