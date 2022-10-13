@@ -46,63 +46,8 @@ class Library {
   buildTable() {
     const table = document.querySelector('#booksTable');
     table.innerHTML = '';
-    this.books.forEach(item => {
-      let idDelete = `${item.title}-delete`;
-      let idEdit = `${item.title}-edit`;
-
-
-
-
-      // let row = document.createElement('tr');
-      // let title = document.createElement('td');
-      // let author = document.createElement('td');
-      // let pages = document.createElement('td');
-      // let isRead = document.createElement('td');
-      // let actions = document.createElement('td');
-
-      // let editButton = document.createElement('button');
-      // let deleteButton = document.createElement('button');
-
-      // editButton.className = 'editBook';
-      // editButton.id = `${idEdit}`;
-
-      // deleteButton.className = 'editBook';
-      // deleteButton.id = `${idDelete}`;
-
-      // title.innerText = `${item.title}`;
-      // author.innerText = `${item.author}`;
-      // pages.innerText = `${item.pages}`;
-      // isRead.innerText = `${item.isRead}`;
-      // editButton.innerText = 'Edit';
-      // deleteButton.innerText = 'Delete';
-
-      // actions.appendChild(editButton);
-      // actions.appendChild(deleteButton);
-
-
-      // row.appendChild(title, author, pages);
-      // row.appendChild(author);
-      // row.appendChild(pages);
-      // row.appendChild(isRead);
-      // row.appendChild(actions);
-
-      // table.appendChild(row);
-
-
-
-
-      let row = `<tr>
-                   <td>${item.title}</td>
-                   <td>${item.author}</td>
-                   <td>${item.pages}</td>
-                   <td>${item.isRead}</td>
-                   <td>
-                    <button id="${idEdit}" class="editBook">Edit</button>
-                    <button id="${idDelete}" class="removeBook">Delete</button>
-                   </td>
-                 <tr>`;
-      table.innerHTML += row;
-    })
+    
+    this.books.forEach(item => table.appendChild(createRow(item)));
     this.#updateActions();
   }
 
@@ -247,4 +192,44 @@ addBook.onclick = event => {
 
 function resetModal() {
   addBook.value = 'Add';
+}
+
+function createRow(item) {
+  const idDelete = `${item.title}-delete`;
+  const idEdit = `${item.title}-edit`;
+
+  const row = document.createElement('tr');
+
+  const title = document.createElement('td');
+  const author = document.createElement('td');
+  const pages = document.createElement('td');
+  const isRead = document.createElement('td');
+  const actions = document.createElement('td');
+
+  const editButton = document.createElement('button');
+  const deleteButton = document.createElement('button');
+
+  editButton.className = 'editBook';
+  editButton.id = `${idEdit}`;
+
+  deleteButton.className = 'removeBook';
+  deleteButton.id = `${idDelete}`;
+
+  title.innerText = `${item.title}`;
+  author.innerText = `${item.author}`;
+  pages.innerText = `${item.pages}`;
+  isRead.innerText = `${item.isRead}`;
+  editButton.innerText = 'Edit';
+  deleteButton.innerText = 'Delete';
+  
+  row.appendChild(title);
+  row.appendChild(author);
+  row.appendChild(pages);
+  row.appendChild(isRead);
+  row.appendChild(actions);
+
+  actions.appendChild(editButton);
+  actions.appendChild(deleteButton);
+
+  return row;
 }
