@@ -92,20 +92,18 @@ class Library {
   }
 }
 
-class Table {
-  constructor() {
-    this.table = document.querySelector('#booksTable');
-  }
+const myTable = {
+    table : document.querySelector('#booksTable'),
 
   buildTable(library) {
     this.table.innerHTML = '';
-    library?.books.forEach(item => this.table.appendChild(this.#createRow(item)));
-    this.#updateActions(library, this.table);
-  }  
+    library?.books.forEach(item => this.table.appendChild(this.createRow(item)));
+    this.updateActions(library, this.table);
+  },  
 
-  #createRow(item) {
+  createRow(item) {
     const row = document.createElement('tr');
-    const rowElements = this.#createElements(item);
+    const rowElements = this.createElements(item);
     const rowData = Object.values(rowElements).slice(0,5);
     const rowButtons = Object.values(rowElements).slice(5);
 
@@ -113,9 +111,9 @@ class Table {
     rowButtons.forEach(element => rowElements.actions.appendChild(element));
 
     return row;
-  }
+  },
 
-  #createElements(item) {
+  createElements(item) {
     const title = document.createElement('td');
     const author = document.createElement('td');
     const pages = document.createElement('td');
@@ -135,13 +133,13 @@ class Table {
       deleteButton,
     }
 
-    const elementsWithAtributes = this.#setAtributes(item, elements);
-    const newElements = this.#setInnerTexts(item, elementsWithAtributes);
+    const elementsWithAtributes = this.setAtributes(item, elements);
+    const newElements = this.setInnerTexts(item, elementsWithAtributes);
 
     return newElements;
-  }
+  },
 
-  #setAtributes(item, elements) {
+  setAtributes(item, elements) {
     const idDelete = `${item.title}-delete`;
     const idEdit = `${item.title}-edit`;
   
@@ -152,9 +150,9 @@ class Table {
     elements.deleteButton.id = idDelete;
 
     return elements;
-  }
+  },
 
-  #setInnerTexts(item, elements) {
+  setInnerTexts(item, elements) {
     elements.title.innerText = item.title;
     elements.author.innerText = item.author;
     elements.pages.innerText = item.pages;
@@ -163,9 +161,9 @@ class Table {
     elements.deleteButton.innerText = 'Delete';
 
     return elements;
-  }
+  },
 
-  #updateActions(library) {
+  updateActions(library) {
     const deleteButton = document.querySelectorAll('.removeBook');
     deleteButton.forEach(item => {
       item.addEventListener('click', () => {
@@ -182,12 +180,10 @@ class Table {
         library.editBookInfo(itemId);
       });
     });
-  }
+  },
 }
 
 const myBooks = new Library();
-
-const myTable = new Table();
 
 const modalControl = {
   modal : document.querySelector("#modal"),
