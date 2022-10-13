@@ -195,7 +195,6 @@ const modalControl = {
   toggle() {
     if (modal.style.display === "block") {
       modal.style.display = "none";
-      resetModal();
       modalControl.resetInput();
       myBooks.selectedIndex = myBooks.books.length;
       return;
@@ -232,9 +231,9 @@ const modalControl = {
 
   resetInput() {
     const input = this.getInput();
-    return input.forms.reset();
-  }
-
+    input.forms.reset();
+    addBook.value = 'Add';
+  },
 }
 
 const addBook = document.querySelector('#addBook');
@@ -271,6 +270,4 @@ addBook.onclick = event => {
   }
 }
 
-function resetModal() {
-  addBook.value = 'Add';
-}
+
