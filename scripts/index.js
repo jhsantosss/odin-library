@@ -19,7 +19,7 @@ class Book {
 class Library {
   constructor () {
     this.books = [];
-    this.selectedIndex = 0;
+    this.selectedIndex;
   }
 
   getBook() {
@@ -43,14 +43,6 @@ class Library {
     return input.forms.reset();
   }
 
-  buildTable() {
-    const table = document.querySelector('#booksTable');
-    table.innerHTML = '';
-    
-    this.books.forEach(item => table.appendChild(createRow(item)));
-    this.#updateActions();
-  }
-
   #addBook(title, author, pages, isRead) {
     if (!this.#hasBook(title)) {
       this.books.push(new Book(title, author, pages, isRead));
@@ -68,7 +60,7 @@ class Library {
     return true;
   }
 
-  #editBookInfo(wantedBook) {
+  editBookInfo(wantedBook) {
     const bookToBeEdited = this.#selectBook(wantedBook);
 
     toggleModal();
@@ -120,9 +112,8 @@ class Library {
     return false;
   }
 
-  #removeBook(wantedBook) {
+  removeBook(wantedBook) {
     this.books = this.books.filter(item => item.title != wantedBook);
-    this.buildTable();
   }
 
   #selectBook(wantedTitle) {
@@ -132,12 +123,67 @@ class Library {
     return selectedBook;
   }
 
-  #updateActions() {
+}
+
+class Table {
+  constructor() {
+    this.table = document.querySelector('#booksTable');
+  }
+
+  buildTable(library) {
+    this.table.innerHTML = '';
+    library?.books.forEach(item => this.table.appendChild(this.createRow(item)));
+    this.#updateActions(library, this.table);
+    return this.table;
+  }  
+
+  createRow(item) {
+    const idDelete = `${item.title}-delete`;
+    const idEdit = `${item.title}-edit`;
+  
+    const row = document.createElement('tr');
+  
+    const title = document.createElement('td');
+    const author = document.createElement('td');
+    const pages = document.createElement('td');
+    const isRead = document.createElement('td');
+    const actions = document.createElement('td');
+  
+    const editButton = document.createElement('button');
+    const deleteButton = document.createElement('button');
+  
+    editButton.className = 'editBook';
+    editButton.id = `${idEdit}`;
+  
+    deleteButton.className = 'removeBook';
+    deleteButton.id = `${idDelete}`;
+  
+    title.innerText = `${item.title}`;
+    author.innerText = `${item.author}`;
+    pages.innerText = `${item.pages}`;
+    isRead.innerText = `${item.isRead}`;
+    editButton.innerText = 'Edit';
+    deleteButton.innerText = 'Delete';
+    
+    row.appendChild(title);
+    row.appendChild(author);
+    row.appendChild(pages);
+    row.appendChild(isRead);
+    row.appendChild(actions);
+  
+    actions.appendChild(editButton);
+    actions.appendChild(deleteButton);
+  
+    return row;
+  }
+
+  #updateActions(library) {
     const deleteButton = document.querySelectorAll('.removeBook');
     deleteButton.forEach(item => {
       item.addEventListener('click', () => {
         const itemId = item.id.replace('-delete', '');
-        this.#removeBook(itemId);
+        library.removeBook(itemId);
+        this.buildTable(library);
       });
     });
 
@@ -145,13 +191,16 @@ class Library {
     editButton.forEach(item => {
       item.addEventListener('click', () => {
         const itemId = item.id.replace('-edit', '');
-        this.#editBookInfo(itemId);
+        library.editBookInfo(itemId);
       });
     });
   }
+
 }
 
 const myBooks = new Library();
+
+const myTable = new Table();
 
 const addBook = document.querySelector('#addBook');
 const modal = document.querySelector("#modal");
@@ -179,13 +228,13 @@ addBook.onclick = event => {
 
   if (addBook.value === 'Update') {
     if (myBooks.updateBook()) {
-      myBooks.buildTable();
+      myTable.buildTable(myBooks);
       myBooks.resetInput();
       toggleModal();
     }
   } else {
       if (myBooks.getBook()) {
-        myBooks.buildTable();
+        myTable.buildTable(myBooks);
         myBooks.resetInput();
         toggleModal();
     }
@@ -195,45 +244,3 @@ addBook.onclick = event => {
 function resetModal() {
   addBook.value = 'Add';
 }
-
-function createRow(item) {
-  const idDelete = `${item.title}-delete`;
-  const idEdit = `${item.title}-edit`;
-
-  const row = document.createElement('tr');
-
-  const title = document.createElement('td');
-  const author = document.createElement('td');
-  const pages = document.createElement('td');
-  const isRead = document.createElement('td');
-  const actions = document.createElement('td');
-
-  const editButton = document.createElement('button');
-  const deleteButton = document.createElement('button');
-
-  editButton.className = 'editBook';
-  editButton.id = `${idEdit}`;
-
-  deleteButton.className = 'removeBook';
-  deleteButton.id = `${idDelete}`;
-
-  title.innerText = `${item.title}`;
-  author.innerText = `${item.author}`;
-  pages.innerText = `${item.pages}`;
-  isRead.innerText = `${item.isRead}`;
-  editButton.innerText = 'Edit';
-  deleteButton.innerText = 'Delete';
-  
-  row.appendChild(title);
-  row.appendChild(author);
-  row.appendChild(pages);
-  row.appendChild(isRead);
-  row.appendChild(actions);
-
-  actions.appendChild(editButton);
-  actions.appendChild(deleteButton);
-
-  return row;
-}
-
-// CRIAR OBJETO (CLASSE?) TABLE
