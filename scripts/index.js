@@ -68,8 +68,8 @@ class Library {
     return true;
   }
 
-  #editBookInfo(selectedBook) {
-    const bookToBeEdited = selectedBook;
+  #editBookInfo(wantedBook) {
+    const bookToBeEdited = this.#selectBook(wantedBook);
 
     toggleModal();
 
@@ -136,14 +136,16 @@ class Library {
     const deleteButton = document.querySelectorAll('.removeBook');
     deleteButton.forEach(item => {
       item.addEventListener('click', () => {
-        this.#removeBook(item.id.replace('-delete', ''));
+        const itemId = item.id.replace('-delete', '');
+        this.#removeBook(itemId);
       });
     });
 
     const editButton = document.querySelectorAll('.editBook');
     editButton.forEach(item => {
       item.addEventListener('click', () => {
-        this.#editBookInfo(this.#selectBook(item.id.replace('-edit', '')));
+        const itemId = item.id.replace('-edit', '');
+        this.#editBookInfo(itemId);
       });
     });
   }
@@ -233,3 +235,5 @@ function createRow(item) {
 
   return row;
 }
+
+// CRIAR OBJETO (CLASSE?) TABLE
