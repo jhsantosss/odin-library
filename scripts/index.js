@@ -24,7 +24,7 @@ class Library {
 
   getBook() {
     const data = modalControl.getData();
-    if (this.#checkEmptTitle()) {
+    if (!this.#hasEmptyTitle()) {
       this.#addBook(data.title, data.author, data.pages, data.isRead);
       return true;
     }
@@ -32,7 +32,7 @@ class Library {
 
   updateBook() {
     const data = modalControl.getData();
-    if (this.#checkEmptTitle() && !this.#hasBook(data.title)) {
+    if (!this.#hasEmptyTitle() && !this.#hasBook(data.title)) {
       this.books[this.selectedIndex] = new Book(data.title, data.author, data.pages, data.isRead);
       return true;
     }
@@ -48,15 +48,15 @@ class Library {
     }
   }
 
-  #checkEmptTitle() {
+  #hasEmptyTitle() {
     const input = modalControl.getInput();
 
     if(input.title.value.trim().length === 0) {
       alert('Sorry, title must be provided.');
-      return false;
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   editBookInfo(wantedBook) {
@@ -83,7 +83,6 @@ class Library {
     }
     return false;
   }
-
 
   #selectBook(wantedTitle) {
     const selectedBook = this.books.filter(item => item.title === wantedTitle).at(0);
@@ -198,6 +197,7 @@ const modalControl = {
       modal.style.display = "none";
       resetModal();
       modalControl.resetInput();
+      myBooks.selectedIndex = myBooks.books.length;
       return;
     }
     modal.style.display = "block";
@@ -245,9 +245,13 @@ const closeModal = document.querySelector("#close");
 
 newBook.onclick = modalControl.toggle;
 
-closeModal.onclick = modalControl.toggle;
+closeModal.onclick = () => {
+  modalControl.toggle();
+}
 
-window.onclick = event => { if (event.target == modal) modalControl.toggle() };
+window.onclick = event => {
+  if (event.target == modal) modalControl.toggle();
+};
 
 addBook.onclick = event => {
   event.preventDefault();
@@ -270,6 +274,3 @@ addBook.onclick = event => {
 function resetModal() {
   addBook.value = 'Add';
 }
-
-
-//BUG: se editar o livro, #hasbook para de funcionar pra ele
