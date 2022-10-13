@@ -23,7 +23,7 @@ class Library {
   }
 
   getBook() {
-    const data = this.#getData();
+    const data = modalControl.getData();
     if (this.#checkEmptTitle()) {
       this.#addBook(data.title, data.author, data.pages, data.isRead);
       return true;
@@ -31,16 +31,15 @@ class Library {
   }
 
   updateBook() {
-    const data = this.#getData();
+    const data = modalControl.getData();
     if (this.#checkEmptTitle() && !this.#hasBook(data.title)) {
       this.books[this.selectedIndex] = new Book(data.title, data.author, data.pages, data.isRead);
       return true;
     }
   }
 
-  resetInput() {
-    const input = this.#getInput();
-    return input.forms.reset();
+  removeBook(wantedBook) {
+    this.books = this.books.filter(item => item.title != wantedBook);
   }
 
   #addBook(title, author, pages, isRead) {
@@ -50,7 +49,7 @@ class Library {
   }
 
   #checkEmptTitle() {
-    const input = this.#getInput();
+    const input = modalControl.getInput();
 
     if(input.title.value.trim().length === 0) {
       alert('Sorry, title must be provided.');
@@ -63,11 +62,11 @@ class Library {
   editBookInfo(wantedBook) {
     const bookToBeEdited = this.#selectBook(wantedBook);
 
-    toggleModal();
+    modalControl.toggle();
 
     addBook.value = 'Update';
 
-    const input = this.#getInput();
+    const input = modalControl.getInput();
 
     input.title.value = bookToBeEdited.title;
     input.author.value = (bookToBeEdited.author != 'Not provided') ? bookToBeEdited.author : '';
@@ -76,45 +75,15 @@ class Library {
     
   }
 
-  #getInput() {
-    const inputForms = document.querySelector('#bookInfo');
-    const inputTitle = document.querySelector('#title');
-    const inputAuthor = document.querySelector('#author');
-    const inputPages = document.querySelector('#pages');
-    const inputIsRead = document.querySelector('#check');
-    const input = {
-      forms : inputForms,
-      title : inputTitle,
-      author : inputAuthor,
-      pages : inputPages,
-      isRead : inputIsRead,
-    };
-    return input;
-  }
-
-  #getData() {
-    const input = this.#getInput();
-    const data = {
-      title : input.title.value,
-      author : input.author.value,
-      pages : input.pages.value,
-      isRead : input.isRead.checked ? 'Yes' : 'No',
-    };
-    return data;
-  }
-
   #hasBook(wantedBook) {
     if ((this.books[this.selectedIndex]?.title.toLowerCase() != wantedBook.toLowerCase())
-      && (!!this.books.some(item => item.title.toLowerCase() === wantedBook.toLowerCase()))) {
+      && (this.books.some(item => item.title.toLowerCase() === wantedBook.toLowerCase()))) {
       alert ('Sorry, this title has already been registered.')
       return true;
     }
     return false;
   }
 
-  removeBook(wantedBook) {
-    this.books = this.books.filter(item => item.title != wantedBook);
-  }
 
   #selectBook(wantedTitle) {
     const selectedBook = this.books.filter(item => item.title === wantedTitle).at(0);
@@ -221,26 +190,64 @@ const myBooks = new Library();
 
 const myTable = new Table();
 
+const modalControl = {
+  modal : document.querySelector("#modal"),
+
+  toggle() {
+    if (modal.style.display === "block") {
+      modal.style.display = "none";
+      resetModal();
+      modalControl.resetInput();
+      return;
+    }
+    modal.style.display = "block";
+  },
+
+  getInput() {
+    const inputForms = document.querySelector('#bookInfo');
+    const inputTitle = document.querySelector('#title');
+    const inputAuthor = document.querySelector('#author');
+    const inputPages = document.querySelector('#pages');
+    const inputIsRead = document.querySelector('#check');
+    const input = {
+      forms : inputForms,
+      title : inputTitle,
+      author : inputAuthor,
+      pages : inputPages,
+      isRead : inputIsRead,
+    };
+    return input;
+  },
+
+  getData() {
+    const input = this.getInput();
+    const data = {
+      title : input.title.value,
+      author : input.author.value,
+      pages : input.pages.value,
+      isRead : input.isRead.checked ? 'Yes' : 'No',
+    };
+    return data;
+  },
+
+  resetInput() {
+    const input = this.getInput();
+    return input.forms.reset();
+  }
+
+}
+
 const addBook = document.querySelector('#addBook');
-const modal = document.querySelector("#modal");
+
 const newBook = document.querySelector("#newBook");
 const closeModal = document.querySelector("#close");
 
-function toggleModal() {
-  if (modal.style.display === "block") {
-    modal.style.display = "none";
-    resetModal();
-    myBooks.resetInput();
-    return;
-  }
-  modal.style.display = "block";
-}
 
-newBook.onclick = toggleModal;
+newBook.onclick = modalControl.toggle;
 
-closeModal.onclick = toggleModal;
+closeModal.onclick = modalControl.toggle;
 
-window.onclick = event => { if (event.target == modal) toggleModal() };
+window.onclick = event => { if (event.target == modal) modalControl.toggle() };
 
 addBook.onclick = event => {
   event.preventDefault();
@@ -248,14 +255,14 @@ addBook.onclick = event => {
   if (addBook.value === 'Update') {
     if (myBooks.updateBook()) {
       myTable.buildTable(myBooks);
-      myBooks.resetInput();
-      toggleModal();
+      modalControl.resetInput();
+      modalControl.toggle();
     }
   } else {
       if (myBooks.getBook()) {
         myTable.buildTable(myBooks);
-        myBooks.resetInput();
-        toggleModal();
+        modalControl.resetInput();
+        modalControl.toggle();
     }
   }
 }
@@ -263,3 +270,6 @@ addBook.onclick = event => {
 function resetModal() {
   addBook.value = 'Add';
 }
+
+
+//BUG: se editar o livro, #hasbook para de funcionar pra ele
