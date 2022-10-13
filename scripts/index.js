@@ -83,7 +83,7 @@ class Library {
     const inputPages = document.querySelector('#pages');
     const inputIsRead = document.querySelector('#check');
     const input = {
-      forms: inputForms,
+      forms : inputForms,
       title : inputTitle,
       author : inputAuthor,
       pages : inputPages,
@@ -104,8 +104,8 @@ class Library {
   }
 
   #hasBook(wantedBook) {
-    if ((this.books[this.selectedIndex]?.title != wantedBook)
-      && (!!this.books.some(item => item.title === wantedBook))) {
+    if ((this.books[this.selectedIndex]?.title.toLowerCase() != wantedBook.toLowerCase())
+      && (!!this.books.some(item => item.title.toLowerCase() === wantedBook.toLowerCase()))) {
       alert ('Sorry, this title has already been registered.')
       return true;
     }
