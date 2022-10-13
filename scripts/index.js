@@ -122,7 +122,6 @@ class Library {
     
     return selectedBook;
   }
-
 }
 
 class Table {
@@ -132,49 +131,70 @@ class Table {
 
   buildTable(library) {
     this.table.innerHTML = '';
-    library?.books.forEach(item => this.table.appendChild(this.createRow(item)));
+    library?.books.forEach(item => this.table.appendChild(this.#createRow(item)));
     this.#updateActions(library, this.table);
-    return this.table;
   }  
 
-  createRow(item) {
-    const idDelete = `${item.title}-delete`;
-    const idEdit = `${item.title}-edit`;
-  
+  #createRow(item) {
     const row = document.createElement('tr');
-  
+    const rowElements = this.#createElements(item);
+    const rowData = Object.values(rowElements).slice(0,5);
+    const rowButtons = Object.values(rowElements).slice(5);
+
+    rowData.forEach(element => row.appendChild(element));
+    rowButtons.forEach(element => rowElements.actions.appendChild(element));
+
+    return row;
+  }
+
+  #createElements(item) {
     const title = document.createElement('td');
     const author = document.createElement('td');
     const pages = document.createElement('td');
     const isRead = document.createElement('td');
     const actions = document.createElement('td');
-  
+    
     const editButton = document.createElement('button');
     const deleteButton = document.createElement('button');
+
+    const elements = {
+      title, 
+      author,
+      pages, 
+      isRead,
+      actions,
+      editButton,
+      deleteButton,
+    }
+
+    const elementsWithAtributes = this.#setAtributes(item, elements);
+    const newElements = this.#setInnerTexts(item, elementsWithAtributes);
+
+    return newElements;
+  }
+
+  #setAtributes(item, elements) {
+    const idDelete = `${item.title}-delete`;
+    const idEdit = `${item.title}-edit`;
   
-    editButton.className = 'editBook';
-    editButton.id = `${idEdit}`;
+    elements.editButton.className = 'editBook';
+    elements.editButton.id = idEdit;
   
-    deleteButton.className = 'removeBook';
-    deleteButton.id = `${idDelete}`;
-  
-    title.innerText = `${item.title}`;
-    author.innerText = `${item.author}`;
-    pages.innerText = `${item.pages}`;
-    isRead.innerText = `${item.isRead}`;
-    editButton.innerText = 'Edit';
-    deleteButton.innerText = 'Delete';
-    
-    row.appendChild(title);
-    row.appendChild(author);
-    row.appendChild(pages);
-    row.appendChild(isRead);
-    row.appendChild(actions);
-  
-    actions.appendChild(editButton);
-    actions.appendChild(deleteButton);
-  
-    return row;
+    elements.deleteButton.className = 'removeBook';
+    elements.deleteButton.id = idDelete;
+
+    return elements;
+  }
+
+  #setInnerTexts(item, elements) {
+    elements.title.innerText = item.title;
+    elements.author.innerText = item.author;
+    elements.pages.innerText = item.pages;
+    elements.isRead.innerText = item.isRead;
+    elements.editButton.innerText = 'Edit';
+    elements.deleteButton.innerText = 'Delete';
+
+    return elements;
   }
 
   #updateActions(library) {
@@ -195,7 +215,6 @@ class Table {
       });
     });
   }
-
 }
 
 const myBooks = new Library();
