@@ -226,19 +226,19 @@ const modalControl = {
     input.forms.reset();
     addBook.value = 'Add';
   },
+
+  addCloseButtonEventListener() {
+    const closeButton = document.querySelector("#close");
+    closeButton.onclick = () => modalControl.toggle();
+  },
 }
 
 const addBook = document.querySelector('#addBook');
-
 const newBook = document.querySelector("#newBook");
-const closeModal = document.querySelector("#close");
-
 
 newBook.onclick = modalControl.toggle;
 
-closeModal.onclick = () => {
-  modalControl.toggle();
-}
+modalControl.addCloseButtonEventListener();
 
 window.onclick = event => {
   if (event.target == modal) modalControl.toggle();
