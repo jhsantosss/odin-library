@@ -16,39 +16,37 @@ class Book {
     }
 }
 
-class Library {
-  constructor () {
-    this.books = [];
-    this.selectedIndex;
-  }
+const myBooks = {
+    books : [],
+    selectedIndex : undefined,
 
   getBook() {
     const data = modalControl.getData();
-    if (!this.#hasEmptyTitle()) {
-      this.#addBook(data.title, data.author, data.pages, data.isRead);
+    if (!this.hasEmptyTitle()) {
+      this.addBook(data.title, data.author, data.pages, data.isRead);
       return true;
     }
-  }
+  },
 
   updateBook() {
     const data = modalControl.getData();
-    if (!this.#hasEmptyTitle() && !this.#hasBook(data.title)) {
+    if (!this.hasEmptyTitle() && !this.hasBook(data.title)) {
       this.books[this.selectedIndex] = new Book(data.title, data.author, data.pages, data.isRead);
       return true;
     }
-  }
+  },
 
   removeBook(wantedBook) {
     this.books = this.books.filter(item => item.title != wantedBook);
-  }
+  },
 
-  #addBook(title, author, pages, isRead) {
-    if (!this.#hasBook(title)) {
+  addBook(title, author, pages, isRead) {
+    if (!this.hasBook(title)) {
       this.books.push(new Book(title, author, pages, isRead));
     }
-  }
+  },
 
-  #hasEmptyTitle() {
+  hasEmptyTitle() {
     const input = modalControl.getInput();
 
     if(input.title.value.trim().length === 0) {
@@ -57,10 +55,10 @@ class Library {
     }
 
     return false;
-  }
+  },
 
   editBookInfo(wantedBook) {
-    const bookToBeEdited = this.#selectBook(wantedBook);
+    const bookToBeEdited = this.selectBook(wantedBook);
 
     modalControl.toggle();
 
@@ -73,23 +71,23 @@ class Library {
     input.pages.value = (bookToBeEdited.pages != 'Not provided') ? bookToBeEdited.pages : '';
     input.isRead.checked = (bookToBeEdited.isRead === 'Yes') ? true : false;
     
-  }
+  },
 
-  #hasBook(wantedBook) {
+  hasBook(wantedBook) {
     if ((this.books[this.selectedIndex]?.title.toLowerCase() != wantedBook.toLowerCase())
       && (this.books.some(item => item.title.toLowerCase() === wantedBook.toLowerCase()))) {
       alert ('Sorry, this title has already been registered.')
       return true;
     }
     return false;
-  }
+  },
 
-  #selectBook(wantedTitle) {
+  selectBook(wantedTitle) {
     const selectedBook = this.books.filter(item => item.title === wantedTitle).at(0);
     this.selectedIndex = this.books.indexOf(selectedBook);
     
     return selectedBook;
-  }
+  },
 }
 
 const myTable = {
@@ -182,8 +180,6 @@ const myTable = {
     });
   },
 }
-
-const myBooks = new Library();
 
 const modalControl = {
   modal : document.querySelector("#modal"),
