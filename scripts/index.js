@@ -7,13 +7,6 @@ class Book {
     this.isRead = isRead;
 
   }
-
-    info() {
-      if (this.read) { 
-        return `${this.title} by ${this.author}, ${this.pages} pages, already read.`;
-      }
-      return `${this.title} by ${this.author}, ${this.pages} pages, not read yet.`;
-    }
 }
 
 const myBooks = {
@@ -92,7 +85,7 @@ const myBooks = {
 
   selectBook(wantedTitle) {
     const selectedBook = this.books.filter(item => item.title === wantedTitle).at(0);
-    
+
     this.selectedIndex = this.books.indexOf(selectedBook);
     
     return selectedBook;
