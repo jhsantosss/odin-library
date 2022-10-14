@@ -255,12 +255,18 @@ const modalControl = {
           modalControl.toggle();
         }
       } else {
-          if (myBooks.getBook()) {
-            myTable.buildTable(myBooks);
-            modalControl.resetInput();
-            modalControl.toggle();
+        if (myBooks.getBook()) {
+          myTable.buildTable(myBooks);
+          modalControl.resetInput();
+          modalControl.toggle();
         }
       }
+    }
+  },
+
+  addOutterModalClickListener() {
+    window.onclick = event => {
+      if (event.target == modal) modalControl.toggle();
     }
   }
 }
@@ -275,7 +281,5 @@ newBook.onclick = modalControl.toggle;
 
 modalControl.addCloseButtonEventListener();
 modalControl.addSubmitButtonEventListener();
+modalControl.addOutterModalClickListener();
 
-window.onclick = event => {
-  if (event.target == modal) modalControl.toggle();
-};
