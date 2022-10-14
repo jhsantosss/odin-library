@@ -272,14 +272,25 @@ const modalControl = {
 }
 
 const pageControl = {
-  
+  getPageElements() {
+    const newBookButton = document.querySelector("#newBook");
+    const pageElements = {
+      newBookButton,
+    }
+    return pageElements
+  },
+
+  addNewBookButtonEventListener() {
+    const pageElements = this.getPageElements();
+    pageElements.newBookButton.onclick = modalControl.toggle;
+  },
+
+  addAllEventListeners() {
+    this.addNewBookButtonEventListener();
+    modalControl.addCloseButtonEventListener();
+    modalControl.addSubmitButtonEventListener();
+    modalControl.addOutterModalClickListener();
+  },
 }
 
-const newBook = document.querySelector("#newBook");
-
-newBook.onclick = modalControl.toggle;
-
-modalControl.addCloseButtonEventListener();
-modalControl.addSubmitButtonEventListener();
-modalControl.addOutterModalClickListener();
-
+pageControl.addAllEventListeners();
