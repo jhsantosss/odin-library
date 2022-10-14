@@ -59,10 +59,10 @@ const myBooks = {
 
   editBookInfo(wantedBook) {
     const bookToBeEdited = this.selectBook(wantedBook);
-
+    const modalElements = modalControl.getElements();
     modalControl.toggle();
 
-    addBook.value = 'Update';
+    modalElements.submitButton.value = 'Update';
 
     const input = modalControl.getInput();
 
@@ -183,7 +183,7 @@ const myTable = {
 
 const modalControl = {
   modal : document.querySelector("#modal"),
-
+  
   toggle() {
     if (modal.style.display === "block") {
       modal.style.display = "none";
@@ -223,43 +223,59 @@ const modalControl = {
 
   resetInput() {
     const input = this.getInput();
+    const modalElements = this.getElements();
     input.forms.reset();
-    addBook.value = 'Add';
+    modalElements.submitButton.value = 'Add';
+  },
+
+  getElements() {
+    const closeButton = document.querySelector("#close");
+    const submitButton = document.querySelector('#submit');
+    const modalElements = {
+      closeButton,
+      submitButton,
+    }
+    return modalElements;
   },
 
   addCloseButtonEventListener() {
-    const closeButton = document.querySelector("#close");
-    closeButton.onclick = () => modalControl.toggle();
+    const modalElements = this.getElements();
+    modalElements.closeButton.onclick = () => modalControl.toggle();
   },
+
+  addSubmitButtonEventListener() {
+    const modalElements = this.getElements();
+    modalElements.submitButton.onclick = event => {
+      event.preventDefault();
+      
+      if (modalElements.submitButton.value === 'Update') {
+        if (myBooks.updateBook()) {
+          myTable.buildTable(myBooks);
+          modalControl.resetInput();
+          modalControl.toggle();
+        }
+      } else {
+          if (myBooks.getBook()) {
+            myTable.buildTable(myBooks);
+            modalControl.resetInput();
+            modalControl.toggle();
+        }
+      }
+    }
+  }
 }
 
-const addBook = document.querySelector('#addBook');
+const pageControl = {
+  
+}
+
 const newBook = document.querySelector("#newBook");
 
 newBook.onclick = modalControl.toggle;
 
 modalControl.addCloseButtonEventListener();
+modalControl.addSubmitButtonEventListener();
 
 window.onclick = event => {
   if (event.target == modal) modalControl.toggle();
 };
-
-addBook.onclick = event => {
-  event.preventDefault();
-
-  if (addBook.value === 'Update') {
-    if (myBooks.updateBook()) {
-      myTable.buildTable(myBooks);
-      modalControl.resetInput();
-      modalControl.toggle();
-    }
-  } else {
-      if (myBooks.getBook()) {
-        myTable.buildTable(myBooks);
-        modalControl.resetInput();
-        modalControl.toggle();
-    }
-  }
-}
-
-
