@@ -22,16 +22,20 @@ const myBooks = {
 
   getBook() {
     const data = modalControl.getData();
+
     if (!this.hasEmptyTitle()) {
       this.addBook(data.title, data.author, data.pages, data.isRead);
+
       return true;
     }
   },
 
   updateBook() {
     const data = modalControl.getData();
+
     if (!this.hasEmptyTitle() && !this.hasBook(data.title)) {
       this.books[this.selectedIndex] = new Book(data.title, data.author, data.pages, data.isRead);
+
       return true;
     }
   },
@@ -60,6 +64,7 @@ const myBooks = {
   editBookInfo(wantedBook) {
     const bookToBeEdited = this.selectBook(wantedBook);
     const modalElements = modalControl.getElements();
+    
     modalControl.toggle();
 
     modalElements.submitButton.value = 'Update';
@@ -76,14 +81,18 @@ const myBooks = {
   hasBook(wantedBook) {
     if ((this.books[this.selectedIndex]?.title.toLowerCase() != wantedBook.toLowerCase())
       && (this.books.some(item => item.title.toLowerCase() === wantedBook.toLowerCase()))) {
+
       alert ('Sorry, this title has already been registered.')
+
       return true;
     }
+
     return false;
   },
 
   selectBook(wantedTitle) {
     const selectedBook = this.books.filter(item => item.title === wantedTitle).at(0);
+    
     this.selectedIndex = this.books.indexOf(selectedBook);
     
     return selectedBook;
@@ -91,7 +100,7 @@ const myBooks = {
 }
 
 const myTable = {
-    table : document.querySelector('#booksTable'),
+  table : document.querySelector('#booksTable'),
 
   buildTable(library) {
     this.table.innerHTML = '';
@@ -162,20 +171,31 @@ const myTable = {
   },
 
   updateActions(library) {
-    const deleteButton = document.querySelectorAll('.removeBook');
-    deleteButton.forEach(item => {
-      item.addEventListener('click', () => {
-        const itemId = item.id.replace('-delete', '');
-        library.removeBook(itemId);
-        this.buildTable(library);
-      });
-    });
+    this.updateEditButtons(library);
+    this.updateDeleteButtons(library);    
+  },
 
+  updateEditButtons(library) {
     const editButton = document.querySelectorAll('.editBook');
+
     editButton.forEach(item => {
       item.addEventListener('click', () => {
         const itemId = item.id.replace('-edit', '');
+        
         library.editBookInfo(itemId);
+      });
+    });
+  },
+
+  updateDeleteButtons(library) {
+    const deleteButton = document.querySelectorAll('.removeBook');
+
+    deleteButton.forEach(item => {
+      item.addEventListener('click', () => {
+        const itemId = item.id.replace('-delete', '');
+
+        library.removeBook(itemId);
+        this.buildTable(library);
       });
     });
   },
@@ -183,12 +203,15 @@ const myTable = {
 
 const modalControl = {
   modal : document.querySelector("#modal"),
-  
+    
   toggle() {
-    if (modal.style.display === "block") {
+    const isModalActive = (modal.style.display === 'block') ? true : false;
+
+    if (isModalActive) {
       modal.style.display = "none";
-      modalControl.resetInput();
+      this.resetInput();
       myBooks.selectedIndex = myBooks.books.length;
+
       return;
     }
     modal.style.display = "block";
@@ -206,7 +229,8 @@ const modalControl = {
       author : inputAuthor,
       pages : inputPages,
       isRead : inputIsRead,
-    };
+    }
+
     return input;
   },
 
@@ -217,13 +241,15 @@ const modalControl = {
       author : input.author.value,
       pages : input.pages.value,
       isRead : input.isRead.checked ? 'Yes' : 'No',
-    };
+    }
+
     return data;
   },
 
   resetInput() {
     const input = this.getInput();
     const modalElements = this.getElements();
+
     input.forms.reset();
     modalElements.submitButton.value = 'Add';
   },
@@ -235,29 +261,31 @@ const modalControl = {
       closeButton,
       submitButton,
     }
+
     return modalElements;
   },
 
   addCloseButtonEventListener() {
     const modalElements = this.getElements();
+
     modalElements.closeButton.onclick = () => modalControl.toggle();
   },
 
   addSubmitButtonEventListener() {
     const modalElements = this.getElements();
+
     modalElements.submitButton.onclick = event => {
+      
       event.preventDefault();
       
       if (modalElements.submitButton.value === 'Update') {
         if (myBooks.updateBook()) {
           myTable.buildTable(myBooks);
-          modalControl.resetInput();
           modalControl.toggle();
         }
       } else {
         if (myBooks.getBook()) {
           myTable.buildTable(myBooks);
-          modalControl.resetInput();
           modalControl.toggle();
         }
       }
@@ -266,7 +294,7 @@ const modalControl = {
 
   addOutterModalClickListener() {
     window.onclick = event => {
-      if (event.target == modal) modalControl.toggle();
+      if (event.target === modal) modalControl.toggle();
     }
   }
 }
@@ -277,11 +305,13 @@ const pageControl = {
     const pageElements = {
       newBookButton,
     }
+
     return pageElements
   },
 
   addNewBookButtonEventListener() {
     const pageElements = this.getPageElements();
+
     pageElements.newBookButton.onclick = modalControl.toggle;
   },
 
