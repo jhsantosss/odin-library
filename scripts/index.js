@@ -195,19 +195,16 @@ const myTable = {
 }
 
 const modalControl = {
-  modal : document.querySelector("#modal"),
-    
   toggle() {
-    const isModalActive = (modal.style.display === 'block') ? true : false;
-
-    if (isModalActive) {
-      modal.style.display = "none";
+    const modalElements = modalControl.getElements();
+    if (modalElements.base.isActive) {
+      modalElements.base.modal.style.display = "none";
       this.resetInput();
       myBooks.selectedIndex = myBooks.books.length;
 
       return;
     }
-    modal.style.display = "block";
+    modalElements.base.modal.style.display = "block";
   },
 
   getInput() {
@@ -248,9 +245,15 @@ const modalControl = {
   },
 
   getElements() {
+    const modal = document.querySelector("#modal");
+    const isActive = (modal.style.display === 'block') ? true : false;
     const cancelButton = document.querySelector("#cancel");
     const submitButton = document.querySelector('#submit');
     const modalElements = {
+      base : {
+        modal,
+        isActive,
+      },
       cancelButton,
       submitButton,
     }
@@ -258,7 +261,7 @@ const modalControl = {
     return modalElements;
   },
 
-  addcancelButtonEventListener() {
+  addCancelButtonEventListener() {
     const modalElements = this.getElements();
 
     modalElements.cancelButton.onclick = event => {
@@ -292,7 +295,16 @@ const modalControl = {
     window.onclick = event => {
       if (event.target === modal) modalControl.toggle();
     }
-  }
+  },
+
+  addEscapeKeyEventListener() {
+    document.addEventListener('keydown', function(event) {
+      const modal = modalControl.getElements().base;
+      if ((modal.isActive) && (event.code == 'Escape')) {
+        modalControl.toggle();
+      }
+    });
+  },
 }
 
 const pageControl = {
@@ -313,9 +325,10 @@ const pageControl = {
 
   addAllEventListeners() {
     this.addNewBookButtonEventListener();
-    modalControl.addcancelButtonEventListener();
+    modalControl.addCancelButtonEventListener();
     modalControl.addSubmitButtonEventListener();
     modalControl.addOutterModalClickListener();
+    modalControl.addEscapeKeyEventListener();
   },
 }
 
