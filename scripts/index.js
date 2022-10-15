@@ -248,20 +248,23 @@ const modalControl = {
   },
 
   getElements() {
-    const closeButton = document.querySelector("#close");
+    const cancelButton = document.querySelector("#cancel");
     const submitButton = document.querySelector('#submit');
     const modalElements = {
-      closeButton,
+      cancelButton,
       submitButton,
     }
 
     return modalElements;
   },
 
-  addCloseButtonEventListener() {
+  addcancelButtonEventListener() {
     const modalElements = this.getElements();
 
-    modalElements.closeButton.onclick = () => modalControl.toggle();
+    modalElements.cancelButton.onclick = event => {
+      event.preventDefault();
+      modalControl.toggle()
+    }
   },
 
   addSubmitButtonEventListener() {
@@ -310,7 +313,7 @@ const pageControl = {
 
   addAllEventListeners() {
     this.addNewBookButtonEventListener();
-    modalControl.addCloseButtonEventListener();
+    modalControl.addcancelButtonEventListener();
     modalControl.addSubmitButtonEventListener();
     modalControl.addOutterModalClickListener();
   },
