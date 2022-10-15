@@ -205,6 +205,8 @@ const modalControl = {
       return;
     }
     modalElements.base.modal.style.display = "block";
+    const inputTitle = document.querySelector('#title');
+    inputTitle.focus();
   },
 
   getInput() {
