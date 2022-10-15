@@ -199,7 +199,7 @@ const modalControl = {
     const modalElements = modalControl.getElements();
     if (modalElements.base.isActive) {
       modalElements.base.modal.style.display = "none";
-      this.resetInput();
+      modalControl.resetInput();
       myBooks.selectedIndex = myBooks.books.length;
 
       return;
@@ -305,6 +305,26 @@ const modalControl = {
       }
     });
   },
+
+  addEnterKeyEventListener() {
+    document.addEventListener('keydown', function(event) {
+      const modal = modalControl.getElements().base;
+      const submitButton = modalControl.getElements().submitButton;
+      
+      if ((modal.isActive) && (event.code == 'Enter')) {
+
+        if (submitButton.value === 'Update') {
+          if (myBooks.updateBook()) {
+            myTable.buildTable(myBooks);
+          }
+        } else {
+          if (myBooks.getBook()) {
+            myTable.buildTable(myBooks);
+          }
+        }
+      }
+    });
+  },  
 }
 
 const pageControl = {
@@ -329,6 +349,7 @@ const pageControl = {
     modalControl.addSubmitButtonEventListener();
     modalControl.addOutterModalClickListener();
     modalControl.addEscapeKeyEventListener();
+    modalControl.addEnterKeyEventListener();
   },
 }
 
