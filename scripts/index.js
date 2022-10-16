@@ -93,17 +93,55 @@ const myBooks = {
 }
 
 const myTable = {
-  table : document.querySelector('#booksTable'),
+  table : document.querySelector('#table'),
+  tableHead : document.querySelector('#tableHead'),
+  tableBody : document.querySelector('#tableBody'),
 
   buildTable(library) {
-    this.table.innerHTML = '';
-    library?.books.forEach(item => this.table.appendChild(this.createRow(item)));
+    this.cleanTable();
+
+    this.tableHead.appendChild(this.createHead());
+    this.table.appendChild(this.tableHead);
+
+    library?.books.forEach(item => this.tableBody.appendChild(this.createRow(item)));
+    this.table.appendChild(this.tableBody);
+
     this.updateActions(library, this.table);
-  },  
+  },
+
+  cleanTable() {
+    this.table.innerHTML = '';
+    this.tableHead.innerHTML = '';
+    this.tableBody.innerHTML = '';
+  },
+
+  createHead() {
+    const head = document.createElement('tr');
+
+    const title = document.createElement('th');
+    const author = document.createElement('th');
+    const pages = document.createElement('th');
+    const isRead = document.createElement('th');
+    const actions = document.createElement('th');
+    
+    title.innerText = 'Title';
+    author.innerText = 'Author';
+    pages.innerText = 'Pages';
+    isRead.innerText = 'Read';
+    actions.innerText = 'Actions';
+
+    head.appendChild(title);
+    head.appendChild(author);
+    head.appendChild(pages);
+    head.appendChild(isRead);
+    head.appendChild(actions);
+
+    return head;
+  },
 
   createRow(item) {
     const row = document.createElement('tr');
-    const rowElements = this.createElements(item);
+    const rowElements = this.createBodyElements(item);
     const rowData = Object.values(rowElements).slice(0,5);
     const rowButtons = Object.values(rowElements).slice(5);
 
@@ -113,7 +151,7 @@ const myTable = {
     return row;
   },
 
-  createElements(item) {
+  createBodyElements(item) {
     const title = document.createElement('td');
     const author = document.createElement('td');
     const pages = document.createElement('td');
@@ -133,13 +171,13 @@ const myTable = {
       deleteButton,
     }
 
-    const elementsWithAtributes = this.setAtributes(item, elements);
-    const newElements = this.setInnerTexts(item, elementsWithAtributes);
+    const elementsWithAtributes = this.setBodyAtributes(item, elements);
+    const newElements = this.setBodyInnerTexts(item, elementsWithAtributes);
 
     return newElements;
   },
 
-  setAtributes(item, elements) {
+  setBodyAtributes(item, elements) {
     const idDelete = `${item.title}-delete`;
     const idEdit = `${item.title}-edit`;
   
@@ -152,7 +190,7 @@ const myTable = {
     return elements;
   },
 
-  setInnerTexts(item, elements) {
+  setBodyInnerTexts(item, elements) {
     elements.title.innerText = item.title;
     elements.author.innerText = item.author;
     elements.pages.innerText = item.pages;
@@ -188,7 +226,12 @@ const myTable = {
         const itemId = item.id.replace('-delete', '');
 
         library.removeBook(itemId);
-        this.buildTable(library);
+
+        if (!!myBooks.books.length) {
+          this.buildTable(library);
+        } else {
+          this.cleanTable();
+        }
       });
     });
   },

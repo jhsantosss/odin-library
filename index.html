@@ -14,9 +14,10 @@
   </header>
 
   <main>
-    <button id="newBook">New Book</button>
+    <button id="newBook">New Book</button><br>
+    <button id="tableView">Table</button>
+    <button id="cardView">Cards</button>
 
-    <!-- The New Book Modal -->
     <div id="modal" class="modal">
       <div class="modal-content">
         <form id="bookInfo">
@@ -31,19 +32,11 @@
       </div>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Author</th>
-          <th>Pages</th>
-          <th>Read</th>
-          <th>Actions</th>
-        </tr>
+    <table id="table">
+      <thead id="tableHead">
       </thead>
 
-      <tbody id="booksTable">
-
+      <tbody id="tableBody">
       </tbody>
     </table>
   </main>
