@@ -71,3 +71,25 @@ caption {
   text-decoration: none;
   cursor: pointer;
 } 
+
+#cards {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  gap: 10px;
+}
+article {
+  display: flex;
+  justify-content: space-between;
+  /* flex-wrap: nowrap; */
+  padding: 5px;
+  border: #888;
+  border-width: 5px;
+  border-style: solid;
+  min-width: 400px;
+}
+
+#cards {
+  display: flex;
+  flex-direction: row;
+}

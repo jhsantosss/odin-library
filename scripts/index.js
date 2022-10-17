@@ -252,6 +252,138 @@ const tableControl = {
   },
 }
 
+const cardsControl = {
+  cards : document.querySelector('#cards'),
+
+  displayCards(library) {
+    this.cleanCards();
+
+    library?.books.forEach(item => this.cards.appendChild(this.createCard(item)));
+    // this.table.appendChild(this.tableBody);
+
+    // this.updateActions(library);
+
+    
+    // editButton.forEach(item => {
+    //   item.addEventListener('click', () => {
+    //     const itemId = item.id.replace('-edit', '');
+        
+    //     library.editBookInfo(itemId);
+    //   });
+    // });
+
+    // deleteButton.forEach(item => {
+    //   item.addEventListener('click', () => {
+    //     const itemId = item.id.replace('-delete', '');
+
+    //     library.removeBook(itemId);
+
+    //     if (!!myBooks.books.length) {
+    //       this.buildTable(library);
+    //     } else {
+    //       this.cleanTable();
+    //     }
+    //   });
+    // });
+  },
+
+  cleanCards() {
+    this.cards.innerHTML = '';
+  },
+
+  createCard(item) {
+    const newCard = document.createElement('article');
+
+    const leftDiv = document.createElement('div');
+    const title = document.createElement('h3');
+    const content = document.createElement('p');
+
+    const rightDiv = document.createElement('div');
+    const editButton = document.createElement('button');
+    const deleteButton = document.createElement('button');
+
+    title.innerText = item.title;
+    content.innerText = `By ${item.author}\n ${item.pages} pages.`
+    
+    editButton.innerText = 'Edit';
+    deleteButton.innerText = 'Delete';
+
+
+
+    const idDelete = `${item.title}-delete`;
+    const idEdit = `${item.title}-edit`;
+  
+    editButton.className = 'editBook';
+    editButton.id = idEdit;
+  
+    deleteButton.className = 'removeBook';
+    deleteButton.id = idDelete;
+
+    
+
+
+    leftDiv.appendChild(title);
+    leftDiv.appendChild(content);
+
+    rightDiv.appendChild(editButton);
+    rightDiv.appendChild(deleteButton);
+
+    newCard.appendChild(leftDiv);
+    newCard.appendChild(rightDiv);
+
+
+    return newCard;
+  },
+
+  setCardAtributes(item, elements) {
+    const idDelete = `${item.title}-delete`;
+    const idEdit = `${item.title}-edit`;
+  
+    elements.editButton.className = 'editBook';
+    elements.editButton.id = idEdit;
+  
+    elements.deleteButton.className = 'removeBook';
+    elements.deleteButton.id = idDelete;
+
+    return elements;
+  },
+
+  updateActions(library) {
+    this.updateEditButtons(library);
+    this.updateDeleteButtons(library);    
+  },
+
+  updateEditButtons(library) {
+    const editButton = document.querySelectorAll('.editBook');
+
+    editButton.forEach(item => {
+      item.addEventListener('click', () => {
+        const itemId = item.id.replace('-edit', '');
+        
+        library.editBookInfo(itemId);
+      });
+    });
+  },
+
+  updateDeleteButtons(library) {
+    const deleteButton = document.querySelectorAll('.removeBook');
+
+    deleteButton.forEach(item => {
+      item.addEventListener('click', () => {
+        const itemId = item.id.replace('-delete', '');
+
+        library.removeBook(itemId);
+
+        if (!!myBooks.books.length) {
+          this.buildTable(library);
+        } else {
+          this.cleanTable();
+        }
+      });
+    });
+  },
+}
+
 const modalControl = {
   toggle() {
     const modalElements = modalControl.getElements();
@@ -340,11 +472,13 @@ const modalControl = {
       if (modalElements.submitButton.value === 'Update') {
         if (myBooks.updateBook()) {
           tableControl.buildTable(myBooks);
+          cardsControl.displayCards(myBooks);
           modalControl.toggle();
         }
       } else {
         if (myBooks.getBook()) {
           tableControl.buildTable(myBooks);
+          cardsControl.displayCards(myBooks);
           modalControl.toggle();
         }
       }
