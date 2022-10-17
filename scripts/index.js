@@ -92,7 +92,7 @@ const myBooks = {
   },
 }
 
-const myTable = {
+const tableControl = {
   table : document.querySelector('#table'),
   tableHead : document.querySelector('#tableHead'),
   tableBody : document.querySelector('#tableBody'),
@@ -103,10 +103,10 @@ const myTable = {
     this.tableHead.appendChild(this.createHead());
     this.table.appendChild(this.tableHead);
 
-    library?.books.forEach(item => this.tableBody.appendChild(this.createRow(item)));
+    library?.books.forEach(item => this.tableBody.appendChild(this.createBodyRow(item)));
     this.table.appendChild(this.tableBody);
 
-    this.updateActions(library, this.table);
+    this.updateActions(library);
   },
 
   cleanTable() {
@@ -117,29 +117,44 @@ const myTable = {
 
   createHead() {
     const head = document.createElement('tr');
+    const headElements = Object.values(this.createHeadElements());
+    
+    headElements.forEach(item => head.appendChild(item));
 
+    return head;
+  },
+
+  createHeadElements() {
     const title = document.createElement('th');
     const author = document.createElement('th');
     const pages = document.createElement('th');
     const isRead = document.createElement('th');
     const actions = document.createElement('th');
+
+    const elements = {
+      title, 
+      author,
+      pages, 
+      isRead,
+      actions,
+    }
+
+    const newElements = this.setHeadInnerTexts(elements);
     
-    title.innerText = 'Title';
-    author.innerText = 'Author';
-    pages.innerText = 'Pages';
-    isRead.innerText = 'Read';
-    actions.innerText = 'Actions';
-
-    head.appendChild(title);
-    head.appendChild(author);
-    head.appendChild(pages);
-    head.appendChild(isRead);
-    head.appendChild(actions);
-
-    return head;
+    return newElements;
   },
 
-  createRow(item) {
+  setHeadInnerTexts(elements) {
+    elements.title.innerText = 'Title';
+    elements.author.innerText = 'Author';
+    elements.pages.innerText = 'Pages';
+    elements.isRead.innerText = 'Read';
+    elements.actions.innerText = 'Actions';
+
+    return elements;
+  },
+
+  createBodyRow(item) {
     const row = document.createElement('tr');
     const rowElements = this.createBodyElements(item);
     const rowData = Object.values(rowElements).slice(0,5);
@@ -324,12 +339,12 @@ const modalControl = {
       
       if (modalElements.submitButton.value === 'Update') {
         if (myBooks.updateBook()) {
-          myTable.buildTable(myBooks);
+          tableControl.buildTable(myBooks);
           modalControl.toggle();
         }
       } else {
         if (myBooks.getBook()) {
-          myTable.buildTable(myBooks);
+          tableControl.buildTable(myBooks);
           modalControl.toggle();
         }
       }
@@ -360,11 +375,11 @@ const modalControl = {
 
         if (submitButton.value === 'Update') {
           if (myBooks.updateBook()) {
-            myTable.buildTable(myBooks);
+            tableControl.buildTable(myBooks);
           }
         } else {
           if (myBooks.getBook()) {
-            myTable.buildTable(myBooks);
+            tableControl.buildTable(myBooks);
           }
         }
       }
