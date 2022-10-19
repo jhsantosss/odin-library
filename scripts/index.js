@@ -510,10 +510,12 @@ const modalControl = {
         if (submitButton.value === 'Update') {
           if (myBooks.updateBook()) {
             tableControl.buildTable(myBooks);
+            cardsControl.displayCards(myBooks);
           }
         } else {
           if (myBooks.getBook()) {
             tableControl.buildTable(myBooks);
+            cardsControl.displayCards(myBooks);
           }
         }
       }
@@ -522,13 +524,24 @@ const modalControl = {
 }
 
 const pageControl = {
+  selectedView : 'table',
+
   getPageElements() {
     const newBookButton = document.querySelector("#newBook");
+    const tableView = document.querySelector("#tableView");
+    const cardsView = document.querySelector("#cardsView");
+
     const pageElements = {
       newBookButton,
+      tableView,
+      cardsView,
     }
 
     return pageElements
+  },
+
+  toggleView() {
+    
   },
 
   addNewBookButtonEventListener() {
