@@ -98,15 +98,17 @@ const tableControl = {
   tableBody : document.querySelector('#tableBody'),
 
   buildTable(library) {
-    this.cleanTable();
+    if (!!myBooks.books.length) {
+      this.cleanTable();
 
-    this.tableHead.appendChild(this.createHead());
-    this.table.appendChild(this.tableHead);
+      this.tableHead.appendChild(this.createHead());
+      this.table.appendChild(this.tableHead);
 
-    library?.books.forEach(item => this.tableBody.appendChild(this.createBodyRow(item)));
-    this.table.appendChild(this.tableBody);
+      library?.books.forEach(item => this.tableBody.appendChild(this.createBodyRow(item)));
+      this.table.appendChild(this.tableBody);
 
-    this.updateActions(library);
+      this.updateActions(library);
+    }
   },
 
   cleanTable() {
