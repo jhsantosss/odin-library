@@ -263,28 +263,9 @@ const cardsControl = {
 
     // this.updateActions(library);
 
+    this.updateActions(myBooks);
     
-    // editButton.forEach(item => {
-    //   item.addEventListener('click', () => {
-    //     const itemId = item.id.replace('-edit', '');
-        
-    //     library.editBookInfo(itemId);
-    //   });
-    // });
-
-    // deleteButton.forEach(item => {
-    //   item.addEventListener('click', () => {
-    //     const itemId = item.id.replace('-delete', '');
-
-    //     library.removeBook(itemId);
-
-    //     if (!!myBooks.books.length) {
-    //       this.buildTable(library);
-    //     } else {
-    //       this.cleanTable();
-    //     }
-    //   });
-    // });
+    
   },
 
   cleanCards() {
@@ -319,8 +300,9 @@ const cardsControl = {
     deleteButton.className = 'removeBook';
     deleteButton.id = idDelete;
 
-    
 
+
+ 
 
     leftDiv.appendChild(title);
     leftDiv.appendChild(content);
@@ -375,9 +357,9 @@ const cardsControl = {
         library.removeBook(itemId);
 
         if (!!myBooks.books.length) {
-          this.buildTable(library);
+          this.displayCards(library);
         } else {
-          this.cleanTable();
+          this.cleanCards();
         }
       });
     });
