@@ -471,14 +471,12 @@ const modalControl = {
       
       if (modalElements.submitButton.value === 'Update') {
         if (myBooks.updateBook()) {
-          tableControl.buildTable(myBooks);
-          cardsControl.displayCards(myBooks);
+          pageControl.showSelectedView();
           modalControl.toggle();
         }
       } else {
         if (myBooks.getBook()) {
-          tableControl.buildTable(myBooks);
-          cardsControl.displayCards(myBooks);
+          pageControl.showSelectedView();
           modalControl.toggle();
         }
       }
@@ -509,13 +507,11 @@ const modalControl = {
 
         if (submitButton.value === 'Update') {
           if (myBooks.updateBook()) {
-            tableControl.buildTable(myBooks);
-            cardsControl.displayCards(myBooks);
+          pageControl.showSelectedView();
           }
         } else {
           if (myBooks.getBook()) {
-            tableControl.buildTable(myBooks);
-            cardsControl.displayCards(myBooks);
+          pageControl.showSelectedView();
           }
         }
       }
@@ -540,22 +536,49 @@ const pageControl = {
     return pageElements
   },
 
-  toggleView() {
-    
+  showSelectedView() {
+    if (this.selectedView === 'table')
+      tableControl.buildTable(myBooks);
+    if (this.selectedView === 'cards')
+      cardsControl.displayCards(myBooks);
   },
 
   addNewBookButtonEventListener() {
-    const pageElements = this.getPageElements();
+    const newBook = this.getPageElements().newBookButton;
+    newBook.onclick = modalControl.toggle;
+  },
 
-    pageElements.newBookButton.onclick = modalControl.toggle;
+  addTableViewEventListener() {
+    const tableView = this.getPageElements().tableView;
+
+    tableView.onclick = () => {
+      this.selectedView = 'table';
+      cardsControl.cleanCards();
+      this.showSelectedView();
+    }
+  },
+
+  addCardsViewEventListener() {
+    const cardsView = this.getPageElements().cardsView;
+
+    cardsView.onclick = () => {
+      this.selectedView = 'cards';
+      tableControl.cleanTable();
+      this.showSelectedView();
+    }
   },
 
   addAllEventListeners() {
     this.addNewBookButtonEventListener();
+
+    this.addTableViewEventListener();
+    this.addCardsViewEventListener();
+
     modalControl.addCancelButtonEventListener();
-    modalControl.addSubmitButtonEventListener();
     modalControl.addOutterModalClickListener();
     modalControl.addEscapeKeyEventListener();
+
+    modalControl.addSubmitButtonEventListener();
     modalControl.addEnterKeyEventListener();
   },
 }
