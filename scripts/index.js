@@ -92,30 +92,141 @@ const myBooks = {
   },
 }
 
-const tableControl = {
-  table : document.querySelector('#table'),
-  tableHead : document.querySelector('#tableHead'),
-  tableBody : document.querySelector('#tableBody'),
+class DisplayControl {
+  constructor(library) {
+    this.section = document.querySelector('#display');
+    this.library = library;
+  }
 
-  buildTable(library) {
-    if (!!myBooks.books.length) {
-      this.cleanTable();
+  displayContent(library = this.library) {
+    this.cleanContent(library);
+    this.createContent(library);
+    this.updateButtonsEvents(library);
+  }
 
-      this.tableHead.appendChild(this.createHead());
-      this.table.appendChild(this.tableHead);
+  cleanContent() {
+    this.section.innerHTML = '';
+  }
 
-      library?.books.forEach(item => this.tableBody.appendChild(this.createBodyRow(item)));
-      this.table.appendChild(this.tableBody);
+  updateButtonsEvents(library) {
+    this.updateEditButtons(library);
+    this.updateDeleteButtons(library);    
+  }
 
-      this.updateActions(library);
+  updateEditButtons(library) {
+    const editButton = document.querySelectorAll('.editBook');
+
+    editButton.forEach(item => {
+      item.addEventListener('click', () => {
+        const itemId = item.id.replace('-edit', '');
+        
+        library.editBookInfo(itemId);
+      });
+    });
+  }
+
+  updateDeleteButtons(library) {
+    const deleteButton = document.querySelectorAll('.removeBook');
+
+    deleteButton.forEach(item => {
+      item.addEventListener('click', () => {
+        const itemId = item.id.replace('-delete', '');
+        
+        library.removeBook(itemId);
+
+        if (!!library.books.length) {
+          this.displayContent(library);
+        } else {
+          this.cleanContent();
+        }
+      });
+    });
+  }
+}
+
+class CardsDisplay extends DisplayControl {
+  createContent(library) {
+    if (!!library.books.length) {
+      library?.books.forEach(item => this.section.appendChild(this.createCard(item)));
     }
-  },
+  }
 
-  cleanTable() {
-    this.table.innerHTML = '';
-    this.tableHead.innerHTML = '';
-    this.tableBody.innerHTML = '';
-  },
+  createCard(item) {
+    const newCard = document.createElement('article');
+
+    const leftDiv = document.createElement('div');
+    const title = document.createElement('h3');
+    const content = document.createElement('p');
+
+    const rightDiv = document.createElement('div');
+    const editButton = document.createElement('button');
+    const deleteButton = document.createElement('button');
+
+    const elements = {
+      title, 
+      content,
+      pages, 
+      // isRead,
+      editButton,
+      deleteButton,
+    }
+
+    const elementsWithAtributes = this.setCardButtonsAtributes(item, elements);
+    const newElements = this.setCardInnerTexts(item, elementsWithAtributes);
+
+    leftDiv.appendChild(newElements.title);
+    leftDiv.appendChild(newElements.content);
+
+    rightDiv.appendChild(newElements.editButton);
+    rightDiv.appendChild(newElements.deleteButton);
+
+    newCard.appendChild(leftDiv);
+    newCard.appendChild(rightDiv);
+
+    return newCard;
+  }
+  
+  setCardButtonsAtributes(item, elements) {
+    const idDelete = `${item.title}-delete`;
+    const idEdit = `${item.title}-edit`;
+  
+    elements.editButton.className = 'editBook';
+    elements.editButton.id = idEdit;
+  
+    elements.deleteButton.className = 'removeBook';
+    elements.deleteButton.id = idDelete;
+
+    return elements;
+  }
+
+  setCardInnerTexts(item, elements) {
+    elements.title.innerText = item.title;
+    elements.content.innerText = `By ${item.author}\n ${item.pages} pages.`
+    
+    elements.editButton.innerText = 'Edit';
+    elements.deleteButton.innerText = 'Delete';
+
+    return elements;
+  }
+}
+
+class TableDisplay extends DisplayControl {
+  createContent(library) {
+    if (!!library.books.length) { 
+      const table = document.createElement('table');
+      const tableHead = document.createElement('thead');
+      const tableBody = document.createElement('tbody');
+
+      tableHead.appendChild(this.createHead());
+
+      library?.books.forEach(item => tableBody.appendChild(this.createBodyRow(item)));
+
+      table.appendChild(tableHead);
+      table.appendChild(tableBody);
+
+      this.section.appendChild(table);
+    }
+  }
 
   createHead() {
     const head = document.createElement('tr');
@@ -124,7 +235,7 @@ const tableControl = {
     headElements.forEach(item => head.appendChild(item));
 
     return head;
-  },
+  }
 
   createHeadElements() {
     const title = document.createElement('th');
@@ -144,7 +255,7 @@ const tableControl = {
     const newElements = this.setHeadInnerTexts(elements);
     
     return newElements;
-  },
+  }
 
   setHeadInnerTexts(elements) {
     elements.title.innerText = 'Title';
@@ -154,7 +265,7 @@ const tableControl = {
     elements.actions.innerText = 'Actions';
 
     return elements;
-  },
+  }
 
   createBodyRow(item) {
     const row = document.createElement('tr');
@@ -166,7 +277,7 @@ const tableControl = {
     rowButtons.forEach(element => rowElements.actions.appendChild(element));
 
     return row;
-  },
+  }
 
   createBodyElements(item) {
     const title = document.createElement('td');
@@ -192,7 +303,7 @@ const tableControl = {
     const newElements = this.setBodyInnerTexts(item, elementsWithAtributes);
 
     return newElements;
-  },
+  }
 
   setBodyAtributes(item, elements) {
     const idDelete = `${item.title}-delete`;
@@ -205,7 +316,7 @@ const tableControl = {
     elements.deleteButton.id = idDelete;
 
     return elements;
-  },
+  }
 
   setBodyInnerTexts(item, elements) {
     elements.title.innerText = item.title;
@@ -216,157 +327,12 @@ const tableControl = {
     elements.deleteButton.innerText = 'Delete';
 
     return elements;
-  },
-
-  updateActions(library) {
-    this.updateEditButtons(library);
-    this.updateDeleteButtons(library);    
-  },
-
-  updateEditButtons(library) {
-    const editButton = document.querySelectorAll('.editBook');
-
-    editButton.forEach(item => {
-      item.addEventListener('click', () => {
-        const itemId = item.id.replace('-edit', '');
-        
-        library.editBookInfo(itemId);
-      });
-    });
-  },
-
-  updateDeleteButtons(library) {
-    const deleteButton = document.querySelectorAll('.removeBook');
-
-    deleteButton.forEach(item => {
-      item.addEventListener('click', () => {
-        const itemId = item.id.replace('-delete', '');
-
-        library.removeBook(itemId);
-
-        if (!!myBooks.books.length) {
-          this.buildTable(library);
-        } else {
-          this.cleanTable();
-        }
-      });
-    });
-  },
+  }
 }
 
-const cardsControl = {
-  cards : document.querySelector('#cards'),
+const cardsControl = new CardsDisplay(myBooks);
 
-  displayCards(library) {
-    this.cleanCards();
-
-    library?.books.forEach(item => this.cards.appendChild(this.createCard(item)));
-    // this.table.appendChild(this.tableBody);
-
-    // this.updateActions(library);
-
-    this.updateActions(myBooks);
-    
-    
-  },
-
-  cleanCards() {
-    this.cards.innerHTML = '';
-  },
-
-  createCard(item) {
-    const newCard = document.createElement('article');
-
-    const leftDiv = document.createElement('div');
-    const title = document.createElement('h3');
-    const content = document.createElement('p');
-
-    const rightDiv = document.createElement('div');
-    const editButton = document.createElement('button');
-    const deleteButton = document.createElement('button');
-
-    title.innerText = item.title;
-    content.innerText = `By ${item.author}\n ${item.pages} pages.`
-    
-    editButton.innerText = 'Edit';
-    deleteButton.innerText = 'Delete';
-
-
-
-    const idDelete = `${item.title}-delete`;
-    const idEdit = `${item.title}-edit`;
-  
-    editButton.className = 'editBook';
-    editButton.id = idEdit;
-  
-    deleteButton.className = 'removeBook';
-    deleteButton.id = idDelete;
-
-
-
- 
-
-    leftDiv.appendChild(title);
-    leftDiv.appendChild(content);
-
-    rightDiv.appendChild(editButton);
-    rightDiv.appendChild(deleteButton);
-
-    newCard.appendChild(leftDiv);
-    newCard.appendChild(rightDiv);
-
-
-    return newCard;
-  },
-
-  setCardAtributes(item, elements) {
-    const idDelete = `${item.title}-delete`;
-    const idEdit = `${item.title}-edit`;
-  
-    elements.editButton.className = 'editBook';
-    elements.editButton.id = idEdit;
-  
-    elements.deleteButton.className = 'removeBook';
-    elements.deleteButton.id = idDelete;
-
-    return elements;
-  },
-
-  updateActions(library) {
-    this.updateEditButtons(library);
-    this.updateDeleteButtons(library);    
-  },
-
-  updateEditButtons(library) {
-    const editButton = document.querySelectorAll('.editBook');
-
-    editButton.forEach(item => {
-      item.addEventListener('click', () => {
-        const itemId = item.id.replace('-edit', '');
-        
-        library.editBookInfo(itemId);
-      });
-    });
-  },
-
-  updateDeleteButtons(library) {
-    const deleteButton = document.querySelectorAll('.removeBook');
-
-    deleteButton.forEach(item => {
-      item.addEventListener('click', () => {
-        const itemId = item.id.replace('-delete', '');
-
-        library.removeBook(itemId);
-
-        if (!!myBooks.books.length) {
-          this.displayCards(library);
-        } else {
-          this.cleanCards();
-        }
-      });
-    });
-  },
-}
+const tableControl = new TableDisplay(myBooks);
 
 const modalControl = {
   toggle() {
@@ -522,9 +488,9 @@ const pageControl = {
 
   showSelectedView() {
     if (this.selectedView === 'table')
-      tableControl.buildTable(myBooks);
+      tableControl.displayContent();
     if (this.selectedView === 'cards')
-      cardsControl.displayCards(myBooks);
+      cardsControl.displayContent();
   },
 
   addNewBookButtonEventListener() {
@@ -537,7 +503,7 @@ const pageControl = {
 
     tableView.onclick = () => {
       this.selectedView = 'table';
-      cardsControl.cleanCards();
+      cardsControl.cleanContent();
       this.showSelectedView();
     }
   },
@@ -547,7 +513,7 @@ const pageControl = {
 
     cardsView.onclick = () => {
       this.selectedView = 'cards';
-      tableControl.cleanTable();
+      tableControl.cleanContent();
       this.showSelectedView();
     }
   },
